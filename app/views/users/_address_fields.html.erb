@@ -1,0 +1,9 @@
+<div class="row m-2">
+    <div class="col-6">
+        <%= f.text_area :address, :rows => 3, class: "form-control" %>
+    </div>
+    <div class="col-6">
+        <%= f.check_box :_destroy, class: "form-check-input" %>
+        <%= f.label :_destroy, "Delete this address", class: "form-check-label" %>
+    </div>
+</div>

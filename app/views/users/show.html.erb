@@ -1,0 +1,50 @@
+<div class="container"> 
+ <p id="notice"><%= notice %></p>
+
+  <p>
+    <strong>Name:</strong>
+    <%= @user.name %>
+  </p>
+
+  <p>
+    <strong>Dob:</strong>
+    <%= @user.dob %>
+  </p>
+
+  <p>
+    <strong>Gender:</strong>
+    <%= @user.gender %>
+  </p>
+
+  <p>
+    <strong>Status:</strong>
+    <%= @user.status %>
+  </p>
+
+  <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-outline-primary" %> 
+  <%= link_to 'Back', users_path, class: "btn btn-outline-info" %>
+
+  <h3>Addresses</h3>
+  <table class="table table-striped">
+    <thead class="thead-light">
+      <tr>
+        <th>ID</th>
+        <th>Address</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @user.addresses.each do |address| %>
+      <tr>
+        <td><%= address.id %></td>
+        <td><%= address.address %></td>
+        <td>
+          <%= link_to "View", address_path(address) %> | 
+          <%= link_to "Delete", address_path(address), method: :delete  %>
+        </td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+
+</div>

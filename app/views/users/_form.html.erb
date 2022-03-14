@@ -1,0 +1,72 @@
+<%= form_with(model: user, local: true, class: "form ") do |form| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+
+
+  <div class="form-group">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label "Date of Birth" %>
+    <%= form.date_field :dob, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :gender %>
+    <%= form.select :gender, 
+          options_for_select( User.genders.map { |key, value| [key.titleize, User.genders.key(value)] }, user.gender ),
+          {},
+          {class: "form-control"}
+    %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :status %>
+    <%= form.select :status, 
+          options_for_select( User.statuses.map { |key, value| [key.titleize, User.statuses.key(value)] }, user.status ), 
+          {},
+          {class: "form-control"}  
+    %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label "Addresses" %>
+      <%= form.fields_for :addresses do |builder| %>
+        <%= render 'address_fields', f: builder %>
+      <% end %>
+
+    <%= link_to_add_fields 'Add Address', form, :addresses %>
+  </div>
+
+  <%= form.submit(user.new_record? ? "Create user" : "Update user", class: "btn btn-primary") %>
+
+<% end %>
+
+<script>
+$("[data-form-prepend]").click(function(e) {
+  e.preventDefault();
+  var obj = $($(this).attr("data-form-prepend"));
+  obj.find("input, select, textarea").each(function() {
+    $(this).attr("name", function() {
+      return $(this)
+        .attr("name")
+        .replace("new_record", new Date().getTime());
+    });
+  });
+  obj.insertBefore(this);
+  return false;
+});
+</script>
