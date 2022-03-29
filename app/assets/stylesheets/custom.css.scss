@@ -11,3 +11,11 @@ body {
 .nav-link {
     color: #fff !important;
 }
+ 
+.online-status {
+    font-size: 20px;
+    color: #ccc;
+    &.online{
+        color: green;
+    }
+}

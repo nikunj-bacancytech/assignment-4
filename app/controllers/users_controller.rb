@@ -1,8 +1,13 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: %i[ show edit update destroy ]
+  before_action :set_user, only: %i[ show edit update destroy update_status ]
+  before_action :current_user
 
   # GET /users or /users.json
   def index
+    ActionCable.server.broadcast "activity_channel", user_id: current_user.id, status: 'online'
+    file = File.read(Rails.root.join('storage/online_users.json'))
+    data_hash = JSON.parse(file)
+    @currently_online = data_hash['users']
     @users = User.all
   end
 
@@ -56,6 +61,23 @@ class UsersController < ApplicationController
       format.html { redirect_to users_url, notice: "User was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def update_status
+    params.permit :id, :active
+    user_id = params[:id]
+    status = (params[:active] == 'true') ? 'active' : 'inactive'
+    
+    user = User.find(user_id)
+    user.status = status
+    output = 
+      if user.save
+        {success: 1, message: 'Status Changed successfully!', status: user.status}.to_json
+      else
+        {success: 0, message: 'Error in status change', status: user.status}.to_json
+      end
+
+    render :json => output
   end
 
   private

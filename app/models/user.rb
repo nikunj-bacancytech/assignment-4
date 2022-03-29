@@ -7,4 +7,12 @@ class User < ApplicationRecord
 
     enum status: { active: 'Active', inactive: 'Inactive' }
     enum gender: { male: 'Male', female: 'Female', other: 'Other' }
+
+    def self.generate
+        
+    end
+
+    def self.pick_one
+        self.order(Arel.sql('RANDOM()')).first
+    end
 end

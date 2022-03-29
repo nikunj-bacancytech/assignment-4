@@ -1,8 +1,7 @@
 <div class="container">
   <p id="notice"><%= notice %></p>
-
   <h1>Users</h1>
-
+  <h5>Currently logged in as <b><%= current_user.name %></b></h5>
   <table class="table table-striped">
     <thead class="thead-light">
       <tr>
@@ -18,10 +17,15 @@
     <tbody>
       <% @users.each do |user| %>
         <tr>
-          <td><%= user.name %></td>
+          <td><span class="online-status user-<%= user.id %>-status <%= 'online' if ((current_user.id == user.id) || (@currently_online.include? user.id)) %>">●</span><%= user.name %></td>
           <td><%= user.dob %></td>
           <td><%= user.gender %></td>
-          <td><%= user.status %></td>
+          <td>
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input status-updater" <%= "checked" if user.status == 'active'%> id="customSwitch_<%= user.id %>" data-id="<%= user.id %>">
+              <label class="custom-control-label" for="customSwitch_<%= user.id %>" id="check-label-<%= user.id %>"><%= user.status.titleize %></label>
+            </div>
+          </td>
           <td><%= user.addresses.count %></td>
           <td><%= link_to 'Show', user %></td>
           <td><%= link_to 'Edit', edit_user_path(user) %></td>
@@ -35,3 +39,25 @@
 
   <%= link_to 'New User', new_user_path %>
 </div>
+
+<script>
+$(document).on('change', '.status-updater', function(e){
+  let selId = $(this).data('id')
+
+  $.post( "<%= update_status_users_path %>",
+    {
+      id: selId,
+      active: $(this).is(':checked')
+    },
+    function( data ) {
+      alert(data.message);
+    }
+  );
+
+  if ($(this).is(':checked')) {
+    $("#check-label-"+selId).text('Active')
+  } else {
+    $("#check-label-"+selId).text('Inactive')
+  }
+})
+</script>
